@@ -38,3 +38,54 @@ where `A`.`count` = 2;
 395
 
 Question 2:
+a)
+select count(*) from `patients`
+join `pmh` on `patients`.id = `pmh`.id
+where `pmh`.diabetes = 1;
+
+2955
+
+select count(*) from `patients`
+join `pmh` on `patients`.id = `pmh`.id
+join `tests` on `tests`.id = `patients`.id
+where `pmh`.diabetes = 1 and `tests`.test = 'hba1c'
+
+441
+
+441/2955 = 14.9%
+
+b)
+select count(*) from `patients`
+join `pmh` on `patients`.id = `pmh`.id
+where `pmh`.htn = 1
+
+7026
+
+select count(*) from `patients` where id in (
+    select `patients`.id from `patients`
+    join `pmh` on `patients`.id = `pmh`.id
+    where `pmh`.htn = 1)
+and sbp is null or sbp = '';
+
+1992
+
+1992/7026 = 28.4%
+
+c)
+select count(`patients`.id) from `patients`
+    join `pmh` on `patients`.id = `pmh`.id
+    where `pmh`. hyperlipid = 1
+3975
+
+patients with hyperlipid who are taking drugs
+select * from `drugs` where `drugs`.id in (
+    select `patients`.id from `patients`
+    join `pmh` on `patients`.id = `pmh`.id
+    where `pmh`.hyperlipid = 1)
+
+3463
+3975 - 3463 = 512 who are not taking drugs
+
+512 / 3975 = 12.9%
+
+select drug from `drugclasses` where `drugclasses`.level2 = 'Metabolic agents; antihyperlipidemia agents';
